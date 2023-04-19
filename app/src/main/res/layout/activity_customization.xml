@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CustomizationActivity"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="餐點選項"
+            android:textColor="@color/black"
+            android:textSize="40dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#AAAAAA"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="10dp"
+            android:orientation="vertical"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="食物客製:"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="要番茄醬包"
+            android:textColor="@color/black"
+            android:checked="true"
+            android:layout_marginTop="10dp"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="不要番茄醬包"
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#AAAAAA"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="10dp"
+            android:orientation="vertical"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="飲料客製:"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="正常冰"
+            android:textColor="@color/black"
+            android:checked="true"
+            android:layout_marginTop="10dp"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="少冰"
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="去冰"
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_custom_ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="確定"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
