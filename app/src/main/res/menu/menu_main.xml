@@ -8,6 +8,16 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/action_modify"
+        android:title="新增修改餐點選項"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_default"
+        android:title="復原預設餐點選項"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_finish"
         android:title="結束"
         app:showAsAction="never"/>

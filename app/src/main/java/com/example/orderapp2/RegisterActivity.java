@@ -36,9 +36,14 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if ((edit_register_id.equals("") || edit_register_password.equals("")) ){
+                String temp = edit_register_checkpassword.getText().toString();
+
+
+                //if (edit_register_id.equals("") || edit_register_password.equals("")){
+                if (edit_register_id.getText().toString().isEmpty()
+                        || edit_register_password.getText().toString().isEmpty()){
                     txt_register_info.setText("請檢查帳號密碼");
-                }else {
+                }else if(edit_register_password.getText().toString().equals(temp)){
                     SharedPreferences pref=getSharedPreferences("price",MODE_PRIVATE);
                     SharedPreferences.Editor editor=pref.edit();
                     editor.putString("ID",edit_register_id.getText().toString());
@@ -46,6 +51,8 @@ public class RegisterActivity extends AppCompatActivity {
                     editor.commit();
                     editor.apply();
                     finish();
+                }else {
+                    txt_register_info.setText("兩次密碼輸入不同");
                 }
             }
         });
