@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getSupportActionBar() !=null){
+            getSupportActionBar().hide();
+        }
         setContentView(R.layout.activity_main);
         initView();
     }
@@ -45,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         SharedPreferences pref=getSharedPreferences("price",MODE_PRIVATE);
-        String ID = pref.getString("ID", "");
+        String ACCOUNT = pref.getString("ACCOUNT", "");
         String PassWord = pref.getString("PASSWORD", "");
-        edit_id.setText(ID);
+        edit_id.setText(ACCOUNT);
         edit_password.setText(PassWord);
     }
 

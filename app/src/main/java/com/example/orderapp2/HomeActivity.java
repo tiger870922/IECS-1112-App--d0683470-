@@ -1,7 +1,10 @@
 package com.example.orderapp2;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
@@ -13,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,15 +32,24 @@ public class HomeActivity extends AppCompatActivity {
     private LinearLayoutManager detailListLayoutManager;
     private DetailListAdapter detailListAdapter;
     private TextView txt_result;
+    private TextView detail_bottom_dot_text;
+    private TextView detail_bottom_price_total;
     private EditText edtName;
     private Button btnSearch,btnSearcAll;
 
     private List<MyItem> myItems;
     MyDBHelper dbHelper;
     SQLiteDatabase dbrw;
+
+    private int Item_cunt;
+    private int Total_price;
+
+    BuyCarDBHelper buyCarDBHelper;
+    SQLiteDatabase buyCardbrw;
     int item ;
     String name;
     double price;
+    private int amount;
 
 
     private int[] itemImg = {R.drawable.hambuger1,R.drawable.hambuger2,R.drawable.hambuger3,
@@ -57,11 +70,17 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initView(){
+        Item_cunt = 0;
+        Total_price = 0;
         detail_recycler = (RecyclerView) findViewById(R.id.detail_recycler);
         txt_result = (TextView)findViewById(R.id.txt_result);
         edtName = (EditText)findViewById(R.id.edtName);
         btnSearch = (Button) findViewById(R.id.btnSearch);
         btnSearcAll = (Button) findViewById(R.id.btnSearcAll);
+        detail_bottom_dot_text = (TextView)findViewById(R.id.detail_bottom_dot_text);
+        detail_bottom_price_total = (TextView)findViewById(R.id.detail_bottom_price_total);
+        detail_bottom_dot_text.setText(""+Item_cunt);
+        detail_bottom_price_total.setText("$"+Total_price);
 
         btnSearch.setOnClickListener(onClick);
         btnSearcAll.setOnClickListener(onClick);
@@ -69,11 +88,10 @@ public class HomeActivity extends AppCompatActivity {
         dbHelper = new MyDBHelper(getApplicationContext());
         dbrw = dbHelper.getWritableDatabase();
 
-        myItems = new ArrayList<>();
+        buyCarDBHelper = new BuyCarDBHelper(getApplicationContext());
+        buyCardbrw = buyCarDBHelper.getWritableDatabase();
 
-       /* for (int i = 0; i < 13 ; i++) {
-            myItems.add(new MyItem(itemImg[i],itemName[i], itemPrice[i]));
-        }*/
+        myItems = new ArrayList<>();
 
         detailListLayoutManager = new LinearLayoutManager(this);
         detail_recycler.setLayoutManager(detailListLayoutManager);
@@ -89,12 +107,17 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("Add_Item");
+        registerReceiver(receiver,intentFilter);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         showAll();
+        showTotalItem();
     }
 
     @Override
@@ -139,24 +162,6 @@ public class HomeActivity extends AppCompatActivity {
             switch (view.getId()){
                 case R.id.btnSearch:
                     Log.d(TAG, "onClick: btnSearch");
-
-                    //dbHelper = new MyDBHelper(getApplicationContext());
-                    //dbrw = dbHelper.getWritableDatabase();
-
-                    /*for (int i = 0; i < 13 ; i++) {
-                        item = itemImg[i];
-                        name = itemName[i];
-                        price = itemPrice[i];
-                        ContentValues cv = new ContentValues();
-                        cv.put("imgid",item);
-                        cv.put("name",name);
-                        cv.put("price",price);
-                        dbrw.insert("myTable",null,cv);
-                    }*/
-
-                    //dbrw.delete("myTable",null,null);
-                    //edit_name.setText("");
-
                     Search();
                     break;
                 case R.id.btnSearcAll:
@@ -197,16 +202,35 @@ public class HomeActivity extends AppCompatActivity {
         detailListAdapter.notifyDataSetChanged();
     }
 
+    private void showTotalItem(){
+        Total_price = 0;
+        String[] colum = {"imgid","name","note","amount","price"};
+        Cursor c;
+        c = buyCardbrw.query("buyCarTable",colum,null,null,null,null,null);
+        Log.d(TAG, "onClick: c.getCount() = "+c.getCount());
+        if (c.getCount() > 0){
+            c.moveToFirst();
+            for (int i=0 ; i<c.getCount() ; i++){
+                amount = c.getInt(3);
+                price = c.getInt(4);
+                Total_price += amount * price;
+                Log.d(TAG, "onClick: amount = "+amount);
+                Log.d(TAG, "onClick: price = "+price);
+                Log.d(TAG, "onClick: -------------------");
+                c.moveToNext();
+            }
+        }
+        Item_cunt = c.getCount();
+        detail_bottom_dot_text.setText(""+Item_cunt);
+        detail_bottom_price_total.setText("$"+Total_price);
+
+    }
+
     private void showAll(){
         String[] colum = {"imgid","name","price"};
         Cursor c;
         myItems.clear();
-        /*if (edtName.getText().toString().equals("")){
-            c = dbrw.query("myTable",colum,null,null,null,null,null);
-        }else {
-            c = dbrw.query("myTable",colum,"name="+"'"+edtName.getText().toString()+"'",
-                    null,null,null,null);
-        }*/
+
         c = dbrw.query("myTable",colum,null,null,null,null,null);
         Log.d(TAG, "onClick: c.getCount() = "+c.getCount());
         if (c.getCount() > 0){
@@ -242,4 +266,37 @@ public class HomeActivity extends AppCompatActivity {
         }
         showAll();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+    }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("Add_Item")){
+                Log.d(TAG, "onReceive: Add_Item");
+                Bundle bundle=intent.getExtras();
+                Log.d(TAG, "onReceive: name = "+bundle.getString("Name"));
+                Log.d(TAG, "onReceive: price = "+bundle.getFloat("Price"));
+                Log.d(TAG, "onReceive: img = "+bundle.getInt("Image"));
+                Log.d(TAG, "onReceive: Msg = "+bundle.getString("Msg"));
+                Item_cunt++;
+                detail_bottom_dot_text.setText(""+Item_cunt);
+                Total_price += bundle.getFloat("Price");
+                detail_bottom_price_total.setText("$"+Total_price);
+
+                ContentValues cv = new ContentValues();
+                cv.put("imgid",bundle.getInt("Image"));
+                cv.put("name",bundle.getString("Name"));
+                cv.put("note",bundle.getString("Msg"));
+                cv.put("amount",1);
+                cv.put("price",bundle.getFloat("Price"));
+                buyCardbrw.insert("buyCarTable",null,cv);
+            }
+
+        }
+    };
 }

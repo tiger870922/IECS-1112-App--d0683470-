@@ -2,6 +2,7 @@ package com.example.orderapp2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -44,24 +45,21 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.Vi
         holder.detail_item_click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(mContext, "選購", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onClick: 選購");
-                /*Log.d(TAG, "onClick: total_price = "+total_price);
-                Log.d(TAG, "onClick: total_price = "+total_price);
-                Intent intent = new Intent();
-                intent.setAction("key");
-                Bundle bundle = new Bundle();
-                //bundle.putString("price",""+mFruit.getPrice());
-                bundle.putString("name",myItem.getName());
-                //bundle.putFloat("price",mFruit.getPrice());
-                bundle.putFloat("price",myItem.getPrice());
-                bundle.putInt("position",holder.getAdapterPosition());
-                bundle.putInt("flag",2);
-                intent.putExtra("msg1",bundle);
-                mContext.sendBroadcast(intent);*/
+
                 Intent intent = new Intent();
                 intent.setClass(mContext,CustomizationActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("Name",myItem.getName());
+                bundle.putFloat("Price",myItem.getPrice());
+                bundle.putInt("Image",myItem.getItem_img());
+                intent.putExtras(bundle);
                 mContext.startActivity(intent);
+                /*Log.d(TAG, "onClick: "+myItem.getName());
+                Log.d(TAG, "onClick: "+myItem.getPrice());
+                Intent intent_Broadcast = new Intent();
+                intent_Broadcast.setAction("Add_Item");
+                mContext.sendBroadcast(intent_Broadcast);*/
 
             }
         });
